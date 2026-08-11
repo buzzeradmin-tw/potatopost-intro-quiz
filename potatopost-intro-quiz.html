@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PotatoPost 品牌導覽任務</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --green:#5C8A3A;
+    --yellow:#F4B740;
+    --dark-green:#3D4A2E;
+    --dark-green-text:#F7F3ED;
+    --dark-green-text-2:#C2D2A8;
+    --green-pale:#E6EDD7;
+    --bg:#F3F6EC;
+    --card:#fff;
+    --border:#DEE7CD;
+    --text:#2C2722;
+    --text-2:#6E665C;
+    --text-3:#A89F93;
+    --chip-green-bg:#E2EDD0;
+    --chip-green-text:#5E7038;
+    --chip-yellow-bg:#FCEFD2;
+    --chip-yellow-text:#9A7320;
+    --card-shadow:0 6px 24px rgba(60,74,46,.06);
+    --card-shadow-lg:0 16px 40px rgba(60,74,46,.10);
+    --btn-shadow:0 6px 16px rgba(92,138,58,.35);
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html { scroll-behavior:smooth; }
+  body{
+    font-family:'Noto Sans TC','Poppins',sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{ font-family:'Poppins','Noto Sans TC',sans-serif; }
+  .wrap{ max-width:560px; margin:0 auto; padding:0 20px; }
+
+  /* ===== 區塊一：HERO ===== */
+  .hero{
+    background:var(--dark-green);
+    padding:48px 20px 44px;
+    text-align:center;
+  }
+  .hero-mark{
+    width:64px; height:64px;
+    background:#fff;
+    border-radius:20px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:var(--card-shadow-lg);
+    margin-bottom:14px;
+  }
+  .hero-mark img{ width:42px; height:42px; }
+  .hero-wordmark{
+    font-weight:800; font-size:19px; letter-spacing:-0.3px;
+    color:var(--dark-green-text);
+    margin-bottom:22px;
+  }
+  .hero-wordmark span{ color:var(--yellow); }
+  .hero h1{
+    font-weight:800; font-size:26px; line-height:1.45;
+    color:var(--dark-green-text);
+    max-width:420px; margin:0 auto 14px;
+  }
+  .hero p{
+    font-size:14.5px; line-height:1.7;
+    color:var(--dark-green-text-2);
+    max-width:380px; margin:0 auto;
+  }
+
+  /* ===== 通用 section ===== */
+  .section{ padding:34px 0 0; }
+  .eyebrow{
+    font-family:'Poppins'; font-weight:700; font-size:11px;
+    letter-spacing:1.5px; color:var(--text-3);
+    text-align:center; margin-bottom:12px; text-transform:uppercase;
+  }
+
+  /* ===== 區塊二：三大亮點 ===== */
+  .features{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:12px;
+  }
+  @media (max-width:620px){
+    .features{ grid-template-columns:1fr; }
+  }
+  .feature-card{
+    background:var(--card); border-radius:20px; padding:20px 18px;
+    box-shadow:var(--card-shadow);
+  }
+  .feature-icon{
+    width:40px; height:40px; border-radius:12px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:19px; margin-bottom:12px;
+  }
+  .feature-icon.c1{ background:var(--green-pale); }
+  .feature-icon.c2{ background:var(--chip-yellow-bg); }
+  .feature-icon.c3{ background:var(--chip-green-bg); }
+  .feature-card h3{
+    font-size:14.5px; font-weight:700; margin-bottom:6px;
+  }
+  .feature-card p{
+    font-size:13px; line-height:1.65; color:var(--text-2);
+  }
+
+  /* ===== 區塊三：痛點共鳴 ===== */
+  .empathy{
+    background:var(--card); border-radius:20px; padding:24px;
+    box-shadow:var(--card-shadow); margin-top:14px;
+  }
+  .empathy-bubble{
+    display:inline-block; background:var(--bg); border:1px solid var(--border);
+    border-radius:14px 14px 14px 4px;
+    padding:9px 14px; font-size:13px; color:var(--text-2);
+    margin-bottom:8px;
+  }
+  .empathy-reassure{
+    border-left:3px solid var(--green);
+    padding-left:14px; margin-top:14px;
+    font-size:14px; line-height:1.75; color:var(--text);
+  }
+  .empathy-reassure strong{ color:var(--green); }
+
+  /* ===== 測驗卡片（共用） ===== */
+  .quiz-section{ padding:40px 0 60px; }
+  .quiz-card{
+    background:var(--card); border-radius:20px; padding:28px 24px;
+    box-shadow:var(--card-shadow);
+  }
+  .quiz-screen{ display:none; }
+  .quiz-screen.active{ display:block; }
+
+  .quiz-badge{
+    display:inline-flex; align-items:center; gap:6px;
+    background:var(--chip-yellow-bg); color:var(--chip-yellow-text);
+    font-weight:700; font-size:12.5px; padding:7px 14px;
+    border-radius:999px; margin-bottom:14px;
+  }
+  .quiz-lead{ font-size:13.5px; line-height:1.75; color:var(--text-2); margin-bottom:20px; }
+  .btn-primary{
+    display:block; width:100%; text-align:center;
+    background:var(--green); color:#fff;
+    font-weight:700; font-size:15px; padding:14px;
+    border:none; border-radius:999px; cursor:pointer;
+    box-shadow:var(--btn-shadow);
+    transition:opacity .2s;
+  }
+  .btn-primary.disabled{ opacity:.3; pointer-events:none; box-shadow:none; }
+
+  .progress-wrap{ background:var(--green-pale); border-radius:99px; height:6px; margin-bottom:22px; overflow:hidden; }
+  .progress-bar{ height:100%; background:var(--green); border-radius:99px; transition:width .4s ease; }
+  .q-count{ font-size:12.5px; color:var(--text-3); margin-bottom:8px; }
+  .q-text{ font-size:16.5px; font-weight:700; line-height:1.5; margin-bottom:20px; }
+
+  .options{ display:flex; flex-direction:column; gap:10px; margin-bottom:22px; }
+  .option{
+    padding:13px 16px; border:1.5px solid var(--border); border-radius:14px;
+    font-size:14px; color:var(--text); cursor:pointer; user-select:none;
+    transition:border-color .15s, background .15s;
+  }
+  .option:hover{ border-color:var(--green); }
+  .option.correct{ border-color:var(--green); background:var(--chip-green-bg); color:var(--chip-green-text); font-weight:600; }
+  .option.wrong{ border-color:#ef4444; background:#fef2f2; color:#b91c1c; }
+  .option.disabled{ opacity:.4; }
+
+  .result-canvas-wrap{ margin-bottom:20px; }
+  #result-canvas{
+    display:block; width:100%; height:auto;
+    border-radius:20px; box-shadow:var(--card-shadow-lg);
+  }
+  .result-guide{ font-size:13px; line-height:1.75; color:var(--text-2); text-align:center; margin-bottom:18px; }
+  .btn-retry{
+    display:block; margin:14px auto 0; font-size:12.5px; color:var(--text-3);
+    background:none; border:none; cursor:pointer; text-decoration:underline;
+    text-underline-offset:3px;
+  }
+  .btn-retry:hover{ color:var(--text-2); }
+</style>
+</head>
+<body>
+
+  <!-- 區塊一：強烈視覺與吸睛標題 -->
+  <div class="hero">
+    <div class="hero-mark"><img src="assets/logo/potato-post-mark.svg" alt="PotatoPost"></div>
+    <div class="hero-wordmark">Potato<span>Post</span></div>
+    <h1>Threads 靈感枯竭？<br>讓 PotatoPost 成為你的社群分身！</h1>
+    <p>專為社群愛好者打造的 AI 內容生成工具，一鍵為你量身打造符合個人與品牌風格的社群貼文。</p>
+  </div>
+
+  <div class="wrap">
+
+    <!-- 區塊二：三大核心亮點 -->
+    <div class="section">
+      <div class="eyebrow">為什麼是 PotatoPost</div>
+      <div class="features">
+        <div class="feature-card">
+          <div class="feature-icon c1">💡</div>
+          <h3>完美複製語調</h3>
+          <p>安全串聯你的 Threads 帳號，AI 將自動分析你過往的公開貼文風格，抓取你的專屬幽默感與常用字！</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon c2">⚡</div>
+          <h3>貼文一秒產出</h3>
+          <p>不論是美食推坑、職場崩潰還是日常碎念，給它一個關鍵字，連你熟人朋友都分不出來的超擬真文案瞬間完成！</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon c3">🛡️</div>
+          <h3>把關手動發布</h3>
+          <p>AI 生成的內容你可以任意微調，確認 100% 滿意後，由你自己手動操控才會正式發布。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 區塊三：用戶痛點共鳴 -->
+    <div class="section">
+      <div class="empathy">
+        <div class="empathy-bubble">「每天都在想今天 Threads 要發什麼？」</div><br>
+        <div class="empathy-bubble">「AI 寫的文案好死板，一點都不像我講話？」</div>
+        <div class="empathy-reassure">
+          放心！PotatoPost 只學你的公開風格，不碰你的私密隱私，<strong>安全、好玩，而且懂你！</strong>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 測驗區塊 -->
+  <div class="quiz-section" id="quiz">
+    <div class="wrap">
+      <div class="quiz-card" id="quiz-card">
+
+        <!-- 測驗說明 -->
+        <div class="quiz-screen active" id="screen-lead">
+          <div class="quiz-badge">🍯 答題拿 20 Honey</div>
+          <p class="quiz-lead">讀完介紹了嗎？馬上挑戰以下 2 題默契測驗！</p>
+          <button class="btn-primary" onclick="goToQuiz()">馬上挑戰</button>
+        </div>
+
+        <!-- 答題 -->
+        <div class="quiz-screen" id="screen-quiz">
+          <div class="progress-wrap"><div class="progress-bar" id="progress-bar" style="width:0%"></div></div>
+          <p class="q-count" id="question-count">第 1 題，共 2 題</p>
+          <p class="q-text" id="question-text"></p>
+          <div class="options" id="options"></div>
+          <button class="btn-primary disabled" id="btn-next" onclick="nextQuestion()">下一題</button>
+        </div>
+
+      </div>
+
+      <!-- 完成：解鎖憑證圖卡 -->
+      <div class="quiz-screen" id="screen-result">
+        <div class="result-canvas-wrap"><canvas id="result-canvas"></canvas></div>
+        <p class="result-guide">請按下方按鈕保存此圖，並回到 Buzzer App 提交任務，即可領取 20 Honey！</p>
+        <button class="btn-primary" onclick="downloadCard()">點我下載</button>
+        <button class="btn-retry" onclick="retry()">重新看一次說明</button>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        text: "想要讓 PotatoPost 完美模仿你的語氣，它是怎麼做到的？",
+        options: [
+          "讀取我在 Threads 上的公開貼文進行學習，抓取我的專屬風格。",
+          "偷偷駭入我的私訊對話和手機相簿。"
+        ],
+        correct: 0
+      },
+      {
+        text: "用 PotatoPost 產出貼文後，下一步會發生什麼事？",
+        options: [
+          "系統會直接盜用我的帳號自動發文，我什麼都不用管。",
+          "我可以先預覽、修改內容，確認滿意後再由我自己手動發布到 Threads。"
+        ],
+        correct: 1
+      }
+    ];
+
+    let current = 0;
+    let answered = false;
+
+    function showScreen(id){
+      document.querySelectorAll('.quiz-screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    function goToQuiz(){
+      current = 0;
+      showScreen('screen-quiz');
+      renderQuestion();
+    }
+
+    function renderQuestion(){
+      const q = questions[current];
+      answered = false;
+
+      document.getElementById('question-count').textContent = `第 ${current + 1} 題，共 ${questions.length} 題`;
+      document.getElementById('question-text').textContent = q.text;
+      document.getElementById('progress-bar').style.width = `${(current / questions.length) * 100}%`;
+
+      const btnNext = document.getElementById('btn-next');
+      btnNext.textContent = current === questions.length - 1 ? '完成' : '下一題';
+      btnNext.classList.add('disabled');
+
+      const container = document.getElementById('options');
+      container.innerHTML = '';
+      q.options.forEach((opt, i) => {
+        const div = document.createElement('div');
+        div.className = 'option';
+        div.textContent = opt;
+        div.onclick = () => selectOption(i);
+        container.appendChild(div);
+      });
+    }
+
+    function selectOption(index){
+      if (answered) return;
+      answered = true;
+
+      const q = questions[current];
+      const options = document.querySelectorAll('.option');
+
+      options.forEach((opt, i) => {
+        if (i === q.correct) opt.classList.add('correct');
+        else if (i === index) opt.classList.add('wrong');
+        else opt.classList.add('disabled');
+      });
+
+      document.getElementById('btn-next').classList.remove('disabled');
+    }
+
+    function nextQuestion(){
+      current++;
+      if (current >= questions.length){
+        showResult();
+      } else {
+        renderQuestion();
+      }
+    }
+
+    function showResult(){
+      document.getElementById('quiz-card').style.display = 'none';
+      showScreen('screen-result');
+      renderResultCard();
+    }
+
+    function retry(){
+      document.getElementById('quiz-card').style.display = '';
+      showScreen('screen-lead');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ===== 解鎖憑證圖卡 =====
+    function wrapText(ctx, text, maxWidth){
+      const lines = [];
+      let line = '';
+      for (const ch of text){
+        const test = line + ch;
+        if (ctx.measureText(test).width > maxWidth && line !== ''){
+          lines.push(line);
+          line = ch;
+        } else {
+          line = test;
+        }
+      }
+      if (line) lines.push(line);
+      return lines;
+    }
+
+    function roundRect(ctx, x, y, w, h, r){
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.arcTo(x + w, y, x + w, y + h, r);
+      ctx.arcTo(x + w, y + h, x, y + h, r);
+      ctx.arcTo(x, y + h, x, y, r);
+      ctx.arcTo(x, y, x + w, y, r);
+      ctx.closePath();
+    }
+
+    function drawLines(ctx, lines, cx, topY, lineHeight){
+      ctx.textBaseline = 'middle';
+      let cy = topY + lineHeight / 2;
+      lines.forEach(line => {
+        ctx.fillText(line, cx, cy);
+        cy += lineHeight;
+      });
+      return topY + lines.length * lineHeight;
+    }
+
+    // 內嵌 mark SVG（跟 assets/logo/potato-post-mark.svg 內容一致）。
+    // 畫在 canvas 上必須用 data URI，不能載外部檔案——在 file:// 頁面下
+    // Chrome 會把每個外部檔案當成不同來源，畫進 canvas 後會「tainted」，
+    // 之後 toBlob() 會直接失敗，下載按鈕就沒反應（Safari 比較寬鬆，不會擋）。
+    const MARK_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">' +
+      '<circle cx="60" cy="54" r="25" fill="#7A5EA8" opacity=".10"></circle>' +
+      '<path d="M60 14 C84 12 106 26 107 50 C108 71 96 90 74 95 C69 99 54 106 40 106 C46 99 46 95 45 93 C25 87 14 71 13 52 C12 29 36 16 60 14 Z" fill="#F4B740"></path>' +
+      '<ellipse cx="41" cy="37" rx="14" ry="8.5" fill="#fff" opacity=".32"></ellipse>' +
+      '<path d="M60 36 C61.6 49 63.2 51 76 54 C63.2 57 61.6 59 60 72 C58.4 59 56.8 57 44 54 C56.8 51 58.4 49 60 36 Z" fill="#7A5EA8"></path>' +
+      '<path d="M82 38 C82.7 43.5 83.3 44.5 87 45.5 C83.3 46.5 82.7 47.5 82 53 C81.3 47.5 80.7 46.5 77 45.5 C80.7 44.5 81.3 43.5 82 38 Z" fill="#A992C9"></path>' +
+      '<circle cx="43" cy="67" r="2.4" fill="#fff" opacity=".8"></circle>' +
+      '</svg>';
+
+    let markImgCache = null;
+    function loadMarkImage(){
+      if (markImgCache) return Promise.resolve(markImgCache);
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => { markImgCache = img; resolve(img); };
+        img.onerror = reject;
+        img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(MARK_SVG);
+      });
+    }
+
+    async function renderResultCard(){
+      const canvas = document.getElementById('result-canvas');
+      const ctx = canvas.getContext('2d');
+      const dpr = window.devicePixelRatio || 1;
+
+      await Promise.all([
+        document.fonts.load('900 30px "Noto Sans TC"'),
+        document.fonts.load('400 20px "Noto Sans TC"'),
+        loadMarkImage()
+      ]);
+      const markImg = markImgCache;
+
+      const W = 640;
+      const PAD = 56;
+      const maxTextWidth = W - PAD * 2;
+      const cx = W / 2;
+
+      const titleFont = '900 30px "Noto Sans TC", sans-serif';
+      const subtitleFont = '400 20px "Noto Sans TC", sans-serif';
+
+      ctx.font = titleFont;
+      const titleLines = wrapText(ctx, '🎉 恭喜通關！你已獲得解鎖憑證', maxTextWidth);
+
+      const subtitleLines = [
+        'PotatoPost，最懂你的 AI 內容生成工具。',
+        '完美複製你的專屬語氣，社群發文再也不卡關！'
+      ];
+
+      const plateSize = 88;
+      const iconSize = 56;
+      const titleLineHeight = 40;
+      const subtitleLineHeight = 32;
+      const gapPlateTitle = 26;
+      const gapTitleSubtitle = 16;
+
+      const contentHeight = plateSize + gapPlateTitle
+        + titleLines.length * titleLineHeight + gapTitleSubtitle
+        + subtitleLines.length * subtitleLineHeight;
+      const H = PAD * 2 + contentHeight;
+
+      canvas.width = W * dpr;
+      canvas.height = H * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      // 背景卡片
+      ctx.fillStyle = '#ffffff';
+      roundRect(ctx, 0, 0, W, H, 28);
+      ctx.fill();
+
+      let y = PAD;
+
+      // icon 底盤 + mark
+      const plateX = cx - plateSize / 2;
+      ctx.fillStyle = '#F3F6EC';
+      roundRect(ctx, plateX, y, plateSize, plateSize, 24);
+      ctx.fill();
+      ctx.drawImage(markImg, cx - iconSize / 2, y + plateSize / 2 - iconSize / 2, iconSize, iconSize);
+      y += plateSize + gapPlateTitle;
+
+      // 主標題
+      ctx.font = titleFont;
+      ctx.fillStyle = '#2C2722';
+      ctx.textAlign = 'center';
+      y = drawLines(ctx, titleLines, cx, y, titleLineHeight);
+      y += gapTitleSubtitle;
+
+      // 副標
+      ctx.font = subtitleFont;
+      ctx.fillStyle = '#6E665C';
+      drawLines(ctx, subtitleLines, cx, y, subtitleLineHeight);
+    }
+
+    function downloadCard(){
+      const canvas = document.getElementById('result-canvas');
+
+      try {
+        canvas.toBlob(function(blob){
+          if (!blob){
+            alert('圖片產生失敗，請重新整理頁面後再試一次。');
+            return;
+          }
+
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.download = 'PotatoPost-解鎖憑證.png';
+          link.href = url;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+
+          setTimeout(() => URL.revokeObjectURL(url), 5000);
+        }, 'image/png');
+      } catch (err){
+        console.error('下載圖卡失敗', err);
+        alert('圖片產生失敗，請重新整理頁面後再試一次。');
+      }
+    }
+  </script>
+
+</body>
+</html>

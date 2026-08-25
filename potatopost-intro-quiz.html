@@ -63,68 +63,24 @@
     margin-bottom:22px;
   }
   .hero-wordmark span{ color:var(--yellow); }
-  .hero h1{
-    font-weight:800; font-size:26px; line-height:1.45;
+  .hero-slogan{
+    font-weight:800; font-size:23px; letter-spacing:0.5px;
     color:var(--dark-green-text);
-    max-width:420px; margin:0 auto 14px;
-  }
-  .hero p{
-    font-size:14.5px; line-height:1.7;
-    color:var(--dark-green-text-2);
-    max-width:380px; margin:0 auto;
   }
 
   /* ===== 通用 section ===== */
   .section{ padding:34px 0 0; }
-  .eyebrow{
-    font-family:'Poppins'; font-weight:700; font-size:11px;
-    letter-spacing:1.5px; color:var(--text-3);
-    text-align:center; margin-bottom:12px; text-transform:uppercase;
-  }
 
-  /* ===== 區塊二：三大亮點 ===== */
-  .features{
-    display:grid; grid-template-columns:repeat(3,1fr); gap:12px;
+  /* ===== 任務影片 ===== */
+  .video-card{
+    max-width:380px; margin:0 auto;
+    border-radius:20px; overflow:hidden;
+    box-shadow:var(--card-shadow-lg);
+    background:#000;
   }
-  @media (max-width:620px){
-    .features{ grid-template-columns:1fr; }
+  .video-card video{
+    display:block; width:100%; aspect-ratio:9/16; object-fit:cover;
   }
-  .feature-card{
-    background:var(--card); border-radius:20px; padding:20px 18px;
-    box-shadow:var(--card-shadow);
-  }
-  .feature-icon{
-    width:40px; height:40px; border-radius:12px;
-    display:flex; align-items:center; justify-content:center;
-    font-size:19px; margin-bottom:12px;
-  }
-  .feature-icon.c1{ background:var(--green-pale); }
-  .feature-icon.c2{ background:var(--chip-yellow-bg); }
-  .feature-icon.c3{ background:var(--chip-green-bg); }
-  .feature-card h3{
-    font-size:14.5px; font-weight:700; margin-bottom:6px;
-  }
-  .feature-card p{
-    font-size:13px; line-height:1.65; color:var(--text-2);
-  }
-
-  /* ===== 區塊三：痛點共鳴 ===== */
-  .empathy{
-    background:var(--card); border-radius:20px; padding:24px;
-    box-shadow:var(--card-shadow); margin-top:14px;
-  }
-  .empathy-bubble{
-    display:inline-block; background:var(--bg); border:1px solid var(--border);
-    border-radius:14px 14px 14px 4px;
-    padding:9px 14px; font-size:13px; color:var(--text-2);
-    margin-bottom:8px;
-  }
-  .empathy-reassure{
-    border-left:3px solid var(--green);
-    padding-left:14px; margin-top:14px;
-    font-size:14px; line-height:1.75; color:var(--text);
-  }
-  .empathy-reassure strong{ color:var(--green); }
 
   /* ===== 測驗卡片（共用） ===== */
   .quiz-section{ padding:40px 0 60px; }
@@ -188,42 +144,17 @@
   <div class="hero">
     <div class="hero-mark"><img src="assets/logo/potato-post-mark.svg" alt="PotatoPost"></div>
     <div class="hero-wordmark">Potato<span>Post</span></div>
-    <h1>Threads 靈感枯竭？<br>讓 PotatoPost 成為你的社群分身！</h1>
-    <p>專為社群愛好者打造的 AI 內容生成工具，一鍵為你量身打造符合個人與品牌風格的社群貼文。</p>
+    <p class="hero-slogan">解放大膽的創意</p>
   </div>
 
   <div class="wrap">
 
-    <!-- 區塊二：三大核心亮點 -->
+    <!-- 區塊二：任務影片 -->
     <div class="section">
-      <div class="eyebrow">為什麼是 PotatoPost</div>
-      <div class="features">
-        <div class="feature-card">
-          <div class="feature-icon c1">💡</div>
-          <h3>完美複製語調</h3>
-          <p>安全串聯你的 Threads 帳號，AI 將自動分析你過往的公開貼文風格，抓取你的專屬幽默感與常用字！</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon c2">⚡</div>
-          <h3>貼文一秒產出</h3>
-          <p>不論是美食推坑、職場崩潰還是日常碎念，給它一個關鍵字，連你熟人朋友都分不出來的超擬真文案瞬間完成！</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon c3">🛡️</div>
-          <h3>把關手動發布</h3>
-          <p>AI 生成的內容你可以任意微調，確認 100% 滿意後，由你自己手動操控才會正式發布。</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- 區塊三：用戶痛點共鳴 -->
-    <div class="section">
-      <div class="empathy">
-        <div class="empathy-bubble">「每天都在想今天 Threads 要發什麼？」</div><br>
-        <div class="empathy-bubble">「AI 寫的文案好死板，一點都不像我講話？」</div>
-        <div class="empathy-reassure">
-          放心！PotatoPost 只學你的公開風格，不碰你的私密隱私，<strong>安全、好玩，而且懂你！</strong>
-        </div>
+      <div class="video-card">
+        <video controls playsinline preload="metadata" poster="assets/video/potatopost-task-poster.jpg">
+          <source src="assets/video/potatopost-task.mp4" type="video/mp4">
+        </video>
       </div>
     </div>
 

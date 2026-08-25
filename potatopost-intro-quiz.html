@@ -230,6 +230,10 @@
 
     let current = 0;
     let answered = false;
+    const answers = [];
+
+    // 部署 apps-script.gs 後把 /exec 網址填在這裡
+    const SHEET_ENDPOINT = 'https://script.google.com/macros/s/AKfycbyuWbJIthiDk5jaocqPmkhYVd5LfaNuT-AJoLxkpQahqeBkuvuqAhMAG9DCuEWcP6Q/exec';
 
     const taskVideo = document.getElementById('task-video');
     const videoOverlay = document.getElementById('video-overlay');
@@ -246,6 +250,7 @@
 
     function goToQuiz(){
       current = 0;
+      answers.length = 0;
       showScreen('screen-quiz');
       renderQuestion();
     }
@@ -276,6 +281,7 @@
     function selectOption(index){
       if (answered) return;
       answered = true;
+      answers[current] = questions[current].options[index];
 
       const options = document.querySelectorAll('.option');
       options.forEach((opt, i) => {
@@ -284,6 +290,15 @@
       });
 
       document.getElementById('btn-next').classList.remove('disabled');
+    }
+
+    function submitResponses(){
+      if (!SHEET_ENDPOINT || !SHEET_ENDPOINT.startsWith('https://script.google.com')) return;
+      fetch(SHEET_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ q1: answers[0], q2: answers[1], q3: answers[2] })
+      }).catch(err => console.error('問卷回覆送出失敗', err));
     }
 
     function nextQuestion(){
@@ -296,6 +311,7 @@
     }
 
     function showResult(){
+      submitResponses();
       showScreen('screen-result');
       renderResultCard();
     }

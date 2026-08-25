@@ -235,8 +235,8 @@
     // 部署 apps-script.gs 後把 /exec 網址填在這裡
     const SHEET_ENDPOINT = 'https://script.google.com/macros/s/AKfycbyuWbJIthiDk5jaocqPmkhYVd5LfaNuT-AJoLxkpQahqeBkuvuqAhMAG9DCuEWcP6Q/exec';
 
-    // Buzzer App 開啟這個頁面時，網址帶 ?uid=xxx 夾帶用戶 ID
-    const USER_ID = new URLSearchParams(window.location.search).get('uid') || '';
+    // Buzzer App 開啟這個頁面時，網址帶 ?user=xxx 夾帶用戶 ID
+    const USER_ID = new URLSearchParams(window.location.search).get('user') || '';
 
     const taskVideo = document.getElementById('task-video');
     const videoOverlay = document.getElementById('video-overlay');

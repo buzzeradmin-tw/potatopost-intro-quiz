@@ -8,6 +8,7 @@ function doPost(e) {
 
   sheet.appendRow([
     new Date(),
+    data.uid || '',
     data.q1 || '',
     data.q2 || '',
     data.q3 || ''

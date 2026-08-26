@@ -133,6 +133,29 @@
     border-radius:20px; box-shadow:var(--card-shadow-lg);
   }
   .result-guide{ font-size:13px; line-height:1.75; color:var(--dark-green-text-2); text-align:center; margin-bottom:18px; }
+
+  .promo-block{
+    margin-top:22px; padding-top:20px;
+    border-top:1px solid rgba(255,255,255,.14);
+    text-align:center;
+  }
+  .promo-price{ margin:2px 0 14px; }
+  .promo-price-old{
+    font-family:'Poppins'; font-size:15px; font-weight:600;
+    color:var(--dark-green-text-2);
+    text-decoration:line-through;
+    margin-right:8px;
+  }
+  .promo-price-new{
+    font-family:'Poppins'; font-size:25px; font-weight:800;
+    color:var(--dark-green-text);
+  }
+  .promo-price-currency{
+    font-size:11px; font-weight:600;
+    color:var(--dark-green-text-2);
+    margin-left:4px;
+  }
+
   .btn-retry{
     display:block; margin:14px auto 0; font-size:12.5px; color:var(--dark-green-text-2);
     background:none; border:none; cursor:pointer; text-decoration:underline;
@@ -182,6 +205,17 @@
             <div class="result-canvas-wrap"><canvas id="result-canvas"></canvas></div>
             <p class="result-guide">請按下方按鈕保存此圖，並回到 Buzzer App 提交任務，即可領取 20 Honey！</p>
             <button class="btn-primary" onclick="downloadCard()">點我下載</button>
+
+            <div class="promo-block">
+              <div class="quiz-badge">🔥 50% OFF</div>
+              <p class="promo-price">
+                <span class="promo-price-old">$5.99</span>
+                <span class="promo-price-new">$2.99</span>
+                <span class="promo-price-currency">USD</span>
+              </p>
+              <button class="btn-primary" onclick="tryPotatoPost()">馬上體驗 PotatoPost</button>
+            </div>
+
             <button class="btn-retry" onclick="retry()">重新看一次影片</button>
           </div>
 
@@ -483,6 +517,23 @@
       } catch (err){
         console.error('下載圖卡失敗', err);
         alert('圖片產生失敗，請重新整理頁面後再試一次。');
+      }
+    }
+
+    function tryPotatoPost(){
+      const promoCode = 'BuzzerSale';
+      const promoUrl = 'https://www.potatopost.tw/';
+
+      const goToSite = () => { window.location.href = promoUrl; };
+
+      if (navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(promoCode)
+          .then(() => alert(`兌換碼「${promoCode}」已複製，到結帳頁貼上使用！`))
+          .catch(() => alert(`請手動輸入兌換碼：${promoCode}`))
+          .finally(goToSite);
+      } else {
+        alert(`請手動輸入兌換碼：${promoCode}`);
+        goToSite();
       }
     }
   </script>

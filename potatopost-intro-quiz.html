@@ -125,7 +125,6 @@
   }
   .option:hover{ border-color:var(--green); }
   .option.selected{ border-color:var(--green); background:var(--chip-green-bg); color:var(--chip-green-text); font-weight:600; }
-  .option.disabled{ opacity:.4; }
 
   .result-canvas-wrap{ margin-bottom:20px; }
   #result-canvas{
@@ -263,7 +262,6 @@
     ];
 
     let current = 0;
-    let answered = false;
     const answers = [];
 
     // 部署 apps-script.gs 後把 /exec 網址填在這裡
@@ -294,7 +292,6 @@
 
     function renderQuestion(){
       const q = questions[current];
-      answered = false;
 
       document.getElementById('question-count').textContent = `第 ${current + 1} 題，共 ${questions.length} 題`;
       document.getElementById('question-text').textContent = q.text;
@@ -316,14 +313,10 @@
     }
 
     function selectOption(index){
-      if (answered) return;
-      answered = true;
       answers[current] = questions[current].options[index];
 
-      const options = document.querySelectorAll('.option');
-      options.forEach((opt, i) => {
-        if (i === index) opt.classList.add('selected');
-        else opt.classList.add('disabled');
+      document.querySelectorAll('.option').forEach((opt, i) => {
+        opt.classList.toggle('selected', i === index);
       });
 
       document.getElementById('btn-next').classList.remove('disabled');

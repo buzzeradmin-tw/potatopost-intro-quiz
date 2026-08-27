@@ -51,7 +51,7 @@
   }
 
   /* ===== 通用 section ===== */
-  .section{ padding:34px 0 0; }
+  .section{ padding:16px 0 0; }
 
   /* ===== 任務影片 + 內嵌問卷 ===== */
   .video-card{
@@ -65,6 +65,12 @@
     display:block; width:100%; aspect-ratio:9/16; object-fit:cover;
   }
   .video-card video.hidden{ display:none; }
+  /* 全螢幕時改用 contain，維持直式構圖、左右留黑邊，不要裁切成橫式 */
+  .video-card video:fullscreen,
+  .video-card video:-webkit-full-screen{
+    object-fit:contain;
+    background:#000;
+  }
 
   .video-overlay{
     display:none;
@@ -76,6 +82,10 @@
   .quiz-screen{ display:none; }
   .quiz-screen.active{ display:block; }
 
+  .step-label{
+    font-size:12px; font-weight:700; color:var(--yellow);
+    letter-spacing:.5px; margin-bottom:10px;
+  }
   .quiz-badge{
     display:inline-flex; align-items:center; gap:6px;
     background:var(--chip-yellow-bg); color:var(--chip-yellow-text);
@@ -97,6 +107,9 @@
   .progress-bar{ height:100%; background:var(--yellow); border-radius:99px; transition:width .4s ease; }
   .q-count{ font-size:12.5px; color:var(--dark-green-text-2); margin-bottom:8px; }
   .q-text{ font-size:16.5px; font-weight:700; line-height:1.5; margin-bottom:20px; color:var(--dark-green-text); }
+  .q-text.with-hint{ margin-bottom:6px; }
+  .q-multi-hint{ display:none; font-size:11.5px; font-weight:500; color:var(--dark-green-text-2); margin-bottom:14px; }
+  .q-multi-hint.show{ display:block; }
 
   .options{ display:flex; flex-direction:column; gap:10px; margin-bottom:22px; }
   .option{
@@ -135,14 +148,22 @@
     <!-- 區塊二：任務影片＋內嵌問卷 -->
     <div class="section">
       <div class="video-card">
-        <video id="task-video" controls playsinline preload="metadata" poster="assets/video/potatopost-task-poster.jpg">
+        <video id="task-video" class="hidden" controls playsinline preload="metadata" poster="assets/video/potatopost-task-poster.jpg">
           <source src="assets/video/potatopost-task.mp4" type="video/mp4">
         </video>
 
-        <div class="video-overlay" id="video-overlay">
+        <div class="video-overlay active" id="video-overlay">
+
+          <!-- 步驟一：觀看影片 -->
+          <div class="quiz-screen active" id="screen-intro">
+            <p class="step-label">步驟一：觀看影片</p>
+            <p class="quiz-lead">準備好了嗎？點擊開始觀看任務影片</p>
+            <button class="btn-primary" onclick="startVideo()">開始觀看</button>
+          </div>
 
           <!-- 測驗說明 -->
-          <div class="quiz-screen active" id="screen-lead">
+          <div class="quiz-screen" id="screen-lead">
+            <p class="step-label">步驟二：回答題目</p>
             <div class="quiz-badge">🍯 答題拿 20 Honey</div>
             <p class="quiz-lead">看完影片了嗎？馬上回答以下 3 題！</p>
             <button class="btn-primary" onclick="goToQuiz()">馬上挑戰</button>
@@ -153,6 +174,7 @@
             <div class="progress-wrap"><div class="progress-bar" id="progress-bar" style="width:0%"></div></div>
             <p class="q-count" id="question-count">第 1 題，共 3 題</p>
             <p class="q-text" id="question-text"></p>
+            <p class="q-multi-hint" id="q-multi-hint">可複選</p>
             <div class="options" id="options"></div>
             <button class="btn-primary disabled" id="btn-next" onclick="nextQuestion()">下一題</button>
           </div>
@@ -175,6 +197,7 @@
     const questions = [
       {
         text: "你最希望 PotatoPost 先幫你解決哪一件事？",
+        multiple: true,
         options: [
           "更快完成社群貼文或行銷文案",
           "產出可直接使用的圖片或設計素材",
@@ -221,13 +244,35 @@
     const videoOverlay = document.getElementById('video-overlay');
 
     taskVideo.addEventListener('ended', () => {
+      if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
       taskVideo.classList.add('hidden');
       videoOverlay.classList.add('active');
+      showScreen('screen-lead');
     });
 
     function showScreen(id){
       document.querySelectorAll('.quiz-screen').forEach(s => s.classList.remove('active'));
       document.getElementById(id).classList.add('active');
+    }
+
+    // 嘗試全螢幕播放；WebView 或瀏覽器不支援就靜靜失敗，退回卡片內播放
+    function enterFullscreenIfPossible(video){
+      try {
+        if (video.requestFullscreen) video.requestFullscreen().catch(() => {});
+        else if (video.webkitEnterFullscreen) video.webkitEnterFullscreen();
+        else if (video.webkitRequestFullscreen) video.webkitRequestFullscreen();
+      } catch (e) { /* 不支援全螢幕，維持卡片內播放 */ }
+    }
+
+    function playVideo(){
+      videoOverlay.classList.remove('active');
+      taskVideo.classList.remove('hidden');
+      taskVideo.play().catch(() => {});
+      enterFullscreenIfPossible(taskVideo);
+    }
+
+    function startVideo(){
+      playVideo();
     }
 
     function goToQuiz(){
@@ -242,7 +287,11 @@
 
       document.getElementById('question-count').textContent = `第 ${current + 1} 題，共 ${questions.length} 題`;
       document.getElementById('question-text').textContent = q.text;
+      document.getElementById('question-text').classList.toggle('with-hint', !!q.multiple);
+      document.getElementById('q-multi-hint').classList.toggle('show', !!q.multiple);
       document.getElementById('progress-bar').style.width = `${(current / questions.length) * 100}%`;
+
+      answers[current] = q.multiple ? [] : undefined;
 
       const btnNext = document.getElementById('btn-next');
       btnNext.textContent = current === questions.length - 1 ? '完成' : '下一題';
@@ -260,13 +309,24 @@
     }
 
     function selectOption(index){
-      answers[current] = questions[current].options[index];
+      const q = questions[current];
+      const opts = document.querySelectorAll('.option');
 
-      document.querySelectorAll('.option').forEach((opt, i) => {
-        opt.classList.toggle('selected', i === index);
-      });
+      if (q.multiple){
+        opts[index].classList.toggle('selected');
+        answers[current] = Array.from(opts)
+          .filter(o => o.classList.contains('selected'))
+          .map(o => o.textContent);
+        document.getElementById('btn-next').classList.toggle('disabled', answers[current].length === 0);
+      } else {
+        answers[current] = q.options[index];
+        opts.forEach((opt, i) => opt.classList.toggle('selected', i === index));
+        document.getElementById('btn-next').classList.remove('disabled');
+      }
+    }
 
-      document.getElementById('btn-next').classList.remove('disabled');
+    function formatAnswer(a){
+      return Array.isArray(a) ? a.join('、') : (a || '');
     }
 
     function submitResponses(){
@@ -274,7 +334,7 @@
       fetch(SHEET_ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ uid: USER_ID, q1: answers[0], q2: answers[1], q3: answers[2] })
+        body: JSON.stringify({ uid: USER_ID, q1: formatAnswer(answers[0]), q2: formatAnswer(answers[1]), q3: formatAnswer(answers[2]) })
       }).catch(err => console.error('問卷回覆送出失敗', err));
     }
 
@@ -293,11 +353,9 @@
     }
 
     function retry(){
-      videoOverlay.classList.remove('active');
-      taskVideo.classList.remove('hidden');
       taskVideo.currentTime = 0;
-      taskVideo.play();
       showScreen('screen-lead');
+      playVideo();
     }
 
     function tryPotatoPost(){

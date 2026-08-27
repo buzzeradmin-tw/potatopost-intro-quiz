@@ -148,7 +148,7 @@
     <!-- 區塊二：任務影片＋內嵌問卷 -->
     <div class="section">
       <div class="video-card">
-        <video id="task-video" class="hidden" controls playsinline preload="metadata" poster="assets/video/potatopost-task-poster.jpg">
+        <video id="task-video" class="hidden" playsinline preload="metadata" poster="assets/video/potatopost-task-poster.jpg">
           <source src="assets/video/potatopost-task.mp4" type="video/mp4">
         </video>
 
@@ -243,8 +243,29 @@
     const taskVideo = document.getElementById('task-video');
     const videoOverlay = document.getElementById('video-overlay');
 
-    taskVideo.addEventListener('ended', () => {
+    // 沒有 controls 可以拖拉了，但保險再擋一次：不能跳到還沒看過的進度
+    let maxWatched = 0;
+    taskVideo.addEventListener('timeupdate', () => {
+      if (taskVideo.currentTime > maxWatched + 0.5) {
+        taskVideo.currentTime = maxWatched;
+      } else {
+        maxWatched = taskVideo.currentTime;
+      }
+    });
+    taskVideo.addEventListener('seeking', () => {
+      if (taskVideo.currentTime > maxWatched + 0.5) {
+        taskVideo.currentTime = maxWatched;
+      }
+    });
+
+    // 退出全螢幕：標準 Fullscreen API 和 iOS Safari 的原生 video 全螢幕是兩套不同機制，兩個都要處理
+    function exitFullscreenIfActive(){
       if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+      if (taskVideo.webkitDisplayingFullscreen && taskVideo.webkitExitFullscreen) taskVideo.webkitExitFullscreen();
+    }
+
+    taskVideo.addEventListener('ended', () => {
+      exitFullscreenIfActive();
       taskVideo.classList.add('hidden');
       videoOverlay.classList.add('active');
       showScreen('screen-lead');
@@ -265,6 +286,7 @@
     }
 
     function playVideo(){
+      maxWatched = 0;
       videoOverlay.classList.remove('active');
       taskVideo.classList.remove('hidden');
       taskVideo.play().catch(() => {});

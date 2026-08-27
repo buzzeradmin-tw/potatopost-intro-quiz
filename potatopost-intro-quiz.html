@@ -137,6 +137,39 @@
     margin-left:4px;
   }
 
+  .plan-features{
+    list-style:none;
+    text-align:left;
+    margin:0 0 20px;
+    padding-top:16px;
+    border-top:1px solid rgba(255,255,255,.14);
+    display:flex;
+    flex-direction:column;
+    gap:11px;
+  }
+  .plan-features li{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:13.5px;
+  }
+  .feat-check{
+    width:18px; height:18px; flex-shrink:0;
+    border-radius:50%;
+    background:var(--green);
+    color:#fff;
+    display:flex; align-items:center; justify-content:center;
+    font-size:11px; font-weight:800;
+  }
+  .feat-label{
+    color:var(--dark-green-text-2);
+    flex:1;
+  }
+  .feat-value{
+    color:var(--dark-green-text);
+    font-weight:700;
+  }
+
   .btn-retry{
     display:block; margin:14px auto 0; font-size:12.5px; color:var(--dark-green-text-2);
     background:none; border:none; cursor:pointer; text-decoration:underline;
@@ -190,6 +223,16 @@
                 <span class="promo-price-new">$2.99</span>
                 <span class="promo-price-currency">USD</span>
               </p>
+
+              <ul class="plan-features">
+                <li><span class="feat-check">✓</span><span class="feat-label">生成額度</span><span class="feat-value">180 點</span></li>
+                <li><span class="feat-check">✓</span><span class="feat-label">每月影片</span><span class="feat-value">約 2 支</span></li>
+                <li><span class="feat-check">✓</span><span class="feat-label">每月圖片</span><span class="feat-value">約 15 張</span></li>
+                <li><span class="feat-check">✓</span><span class="feat-label">品牌數量</span><span class="feat-value">1 個</span></li>
+                <li><span class="feat-check">✓</span><span class="feat-label">影片檔位</span><span class="feat-value">1 檔</span></li>
+                <li><span class="feat-check">✓</span><span class="feat-label">素材保存</span><span class="feat-value">20 格</span></li>
+              </ul>
+
               <button class="btn-primary" onclick="tryPotatoPost()">馬上體驗 PotatoPost</button>
             </div>
 

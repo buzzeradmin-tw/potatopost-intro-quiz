@@ -108,12 +108,12 @@
   .option:hover{ border-color:var(--green); }
   .option.selected{ border-color:var(--green); background:var(--chip-green-bg); color:var(--chip-green-text); font-weight:600; }
 
-  .result-canvas-wrap{ margin-bottom:20px; }
-  #result-image{
-    display:block; width:100%; height:auto;
-    border-radius:20px; box-shadow:var(--card-shadow-lg);
+  .result-message{
+    font-size:17px; font-weight:700; line-height:1.6;
+    color:var(--dark-green-text);
+    text-align:center;
+    margin-bottom:22px;
   }
-  .result-guide{ font-size:13px; line-height:1.75; color:var(--dark-green-text-2); text-align:center; margin-bottom:18px; }
 
   .promo-block{
     margin-top:22px; padding-top:20px;
@@ -179,14 +179,9 @@
             <button class="btn-primary disabled" id="btn-next" onclick="nextQuestion()">下一題</button>
           </div>
 
-          <!-- 完成：解鎖憑證圖卡 -->
+          <!-- 完成 -->
           <div class="quiz-screen" id="screen-result">
-            <div class="result-canvas-wrap">
-              <canvas id="result-canvas" style="display:none;"></canvas>
-              <img id="result-image" alt="PotatoPost 解鎖憑證">
-            </div>
-            <p class="result-guide">請截圖或保存此圖，並回到 Buzzer App 提交任務，即可領取 20 Honey！</p>
-            <button class="btn-primary" onclick="downloadCard()">點我下載</button>
+            <p class="result-message">恭喜通關，請截圖本頁回 Buzzer 任務頁交付任務領取 Honey 獎勵！</p>
 
             <div class="promo-block">
               <div class="quiz-badge">首月 50% OFF</div>
@@ -326,7 +321,6 @@
     function showResult(){
       submitResponses();
       showScreen('screen-result');
-      renderResultCard();
     }
 
     function retry(){
@@ -335,168 +329,6 @@
       taskVideo.currentTime = 0;
       taskVideo.play();
       showScreen('screen-lead');
-    }
-
-    // ===== 解鎖憑證圖卡 =====
-    function wrapText(ctx, text, maxWidth){
-      const lines = [];
-      let line = '';
-      for (const ch of text){
-        const test = line + ch;
-        if (ctx.measureText(test).width > maxWidth && line !== ''){
-          lines.push(line);
-          line = ch;
-        } else {
-          line = test;
-        }
-      }
-      if (line) lines.push(line);
-      return lines;
-    }
-
-    function roundRect(ctx, x, y, w, h, r){
-      ctx.beginPath();
-      ctx.moveTo(x + r, y);
-      ctx.arcTo(x + w, y, x + w, y + h, r);
-      ctx.arcTo(x + w, y + h, x, y + h, r);
-      ctx.arcTo(x, y + h, x, y, r);
-      ctx.arcTo(x, y, x + w, y, r);
-      ctx.closePath();
-    }
-
-    function drawLines(ctx, lines, cx, topY, lineHeight){
-      ctx.textBaseline = 'middle';
-      let cy = topY + lineHeight / 2;
-      lines.forEach(line => {
-        ctx.fillText(line, cx, cy);
-        cy += lineHeight;
-      });
-      return topY + lines.length * lineHeight;
-    }
-
-    // 內嵌 mark SVG（跟 assets/logo/potato-post-mark.svg 內容一致）。
-    // 畫在 canvas 上必須用 data URI，不能載外部檔案——在 file:// 頁面下
-    // Chrome 會把每個外部檔案當成不同來源，畫進 canvas 後會「tainted」，
-    // 之後 toBlob() 會直接失敗，下載按鈕就沒反應（Safari 比較寬鬆，不會擋）。
-    const MARK_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">' +
-      '<circle cx="60" cy="54" r="25" fill="#7A5EA8" opacity=".10"></circle>' +
-      '<path d="M60 14 C84 12 106 26 107 50 C108 71 96 90 74 95 C69 99 54 106 40 106 C46 99 46 95 45 93 C25 87 14 71 13 52 C12 29 36 16 60 14 Z" fill="#F4B740"></path>' +
-      '<ellipse cx="41" cy="37" rx="14" ry="8.5" fill="#fff" opacity=".32"></ellipse>' +
-      '<path d="M60 36 C61.6 49 63.2 51 76 54 C63.2 57 61.6 59 60 72 C58.4 59 56.8 57 44 54 C56.8 51 58.4 49 60 36 Z" fill="#7A5EA8"></path>' +
-      '<path d="M82 38 C82.7 43.5 83.3 44.5 87 45.5 C83.3 46.5 82.7 47.5 82 53 C81.3 47.5 80.7 46.5 77 45.5 C80.7 44.5 81.3 43.5 82 38 Z" fill="#A992C9"></path>' +
-      '<circle cx="43" cy="67" r="2.4" fill="#fff" opacity=".8"></circle>' +
-      '</svg>';
-
-    let markImgCache = null;
-    function loadMarkImage(){
-      if (markImgCache) return Promise.resolve(markImgCache);
-      return new Promise((resolve, reject) => {
-        const img = new Image();
-        img.onload = () => { markImgCache = img; resolve(img); };
-        img.onerror = reject;
-        img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(MARK_SVG);
-      });
-    }
-
-    async function renderResultCard(){
-      const canvas = document.getElementById('result-canvas');
-      const ctx = canvas.getContext('2d');
-      const dpr = window.devicePixelRatio || 1;
-
-      await Promise.all([
-        document.fonts.load('900 30px "Noto Sans TC"'),
-        document.fonts.load('400 20px "Noto Sans TC"'),
-        loadMarkImage()
-      ]);
-      const markImg = markImgCache;
-
-      const W = 640;
-      const PAD = 56;
-      const maxTextWidth = W - PAD * 2;
-      const cx = W / 2;
-
-      const titleFont = '900 30px "Noto Sans TC", sans-serif';
-      const subtitleFont = '400 20px "Noto Sans TC", sans-serif';
-
-      ctx.font = titleFont;
-      const titleLines = wrapText(ctx, '🎉 恭喜通關！你已獲得解鎖憑證', maxTextWidth);
-
-      const subtitleLines = [
-        'PotatoPost，最懂你的 AI 內容生成工具。',
-        '完美複製你的專屬語氣，社群發文再也不卡關！'
-      ];
-
-      const plateSize = 88;
-      const iconSize = 56;
-      const titleLineHeight = 40;
-      const subtitleLineHeight = 32;
-      const gapPlateTitle = 26;
-      const gapTitleSubtitle = 16;
-
-      const contentHeight = plateSize + gapPlateTitle
-        + titleLines.length * titleLineHeight + gapTitleSubtitle
-        + subtitleLines.length * subtitleLineHeight;
-      const H = PAD * 2 + contentHeight;
-
-      canvas.width = W * dpr;
-      canvas.height = H * dpr;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-      // 背景卡片
-      ctx.fillStyle = '#ffffff';
-      roundRect(ctx, 0, 0, W, H, 28);
-      ctx.fill();
-
-      let y = PAD;
-
-      // icon 底盤 + mark
-      const plateX = cx - plateSize / 2;
-      ctx.fillStyle = '#F3F6EC';
-      roundRect(ctx, plateX, y, plateSize, plateSize, 24);
-      ctx.fill();
-      ctx.drawImage(markImg, cx - iconSize / 2, y + plateSize / 2 - iconSize / 2, iconSize, iconSize);
-      y += plateSize + gapPlateTitle;
-
-      // 主標題
-      ctx.font = titleFont;
-      ctx.fillStyle = '#2C2722';
-      ctx.textAlign = 'center';
-      y = drawLines(ctx, titleLines, cx, y, titleLineHeight);
-      y += gapTitleSubtitle;
-
-      // 副標
-      ctx.font = subtitleFont;
-      ctx.fillStyle = '#6E665C';
-      drawLines(ctx, subtitleLines, cx, y, subtitleLineHeight);
-
-      // 用真正的 <img> 顯示（不是 canvas），iOS Safari 長按才能跳出「儲存到照片」
-      document.getElementById('result-image').src = canvas.toDataURL('image/png');
-    }
-
-    function downloadCard(){
-      const canvas = document.getElementById('result-canvas');
-
-      try {
-        canvas.toBlob(function(blob){
-          if (!blob){
-            alert('圖片產生失敗，請重新整理頁面後再試一次。');
-            return;
-          }
-
-          const url = URL.createObjectURL(blob);
-          const link = document.createElement('a');
-          link.download = 'PotatoPost-解鎖憑證.png';
-          link.href = url;
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-
-          setTimeout(() => URL.revokeObjectURL(url), 5000);
-        }, 'image/png');
-      } catch (err){
-        console.error('下載圖卡失敗', err);
-        alert('圖片產生失敗，請重新整理頁面後再試一次。');
-      }
     }
 
     function tryPotatoPost(){

@@ -520,20 +520,7 @@
     }
 
     function tryPotatoPost(){
-      const promoCode = 'BuzzerSale';
-      const promoUrl = 'https://app.potatopost.tw/#/offer?plan=lite&promo=BuzzerSale';
-
-      const goToSite = () => { window.location.href = promoUrl; };
-
-      if (navigator.clipboard && navigator.clipboard.writeText){
-        navigator.clipboard.writeText(promoCode)
-          .then(() => alert(`兌換碼「${promoCode}」已複製，到結帳頁貼上使用！`))
-          .catch(() => alert(`請手動輸入兌換碼：${promoCode}`))
-          .finally(goToSite);
-      } else {
-        alert(`請手動輸入兌換碼：${promoCode}`);
-        goToSite();
-      }
+      window.location.href = 'https://app.potatopost.tw/#/offer?plan=lite&promo=BuzzerSale';
     }
   </script>
 

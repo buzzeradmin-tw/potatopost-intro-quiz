@@ -127,7 +127,7 @@
   .option.selected{ border-color:var(--green); background:var(--chip-green-bg); color:var(--chip-green-text); font-weight:600; }
 
   .result-canvas-wrap{ margin-bottom:20px; }
-  #result-canvas{
+  #result-image{
     display:block; width:100%; height:auto;
     border-radius:20px; box-shadow:var(--card-shadow-lg);
   }
@@ -201,8 +201,11 @@
 
           <!-- 完成：解鎖憑證圖卡 -->
           <div class="quiz-screen" id="screen-result">
-            <div class="result-canvas-wrap"><canvas id="result-canvas"></canvas></div>
-            <p class="result-guide">請按下方按鈕保存此圖，並回到 Buzzer App 提交任務，即可領取 20 Honey！</p>
+            <div class="result-canvas-wrap">
+              <canvas id="result-canvas" style="display:none;"></canvas>
+              <img id="result-image" alt="PotatoPost 解鎖憑證">
+            </div>
+            <p class="result-guide">請截圖或保存此圖，並回到 Buzzer App 提交任務，即可領取 20 Honey！</p>
             <button class="btn-primary" onclick="downloadCard()">點我下載</button>
 
             <div class="promo-block">
@@ -485,6 +488,9 @@
       ctx.font = subtitleFont;
       ctx.fillStyle = '#6E665C';
       drawLines(ctx, subtitleLines, cx, y, subtitleLineHeight);
+
+      // 用真正的 <img> 顯示（不是 canvas），iOS Safari 長按才能跳出「儲存到照片」
+      document.getElementById('result-image').src = canvas.toDataURL('image/png');
     }
 
     function downloadCard(){

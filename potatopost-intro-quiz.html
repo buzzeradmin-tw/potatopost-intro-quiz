@@ -82,7 +82,6 @@
     font-weight:700; font-size:12.5px; padding:7px 14px;
     border-radius:999px; margin-bottom:14px;
   }
-  .quiz-badge.promo-badge{ color:#DC2626; }
   .quiz-lead{ font-size:13.5px; line-height:1.75; color:var(--dark-green-text-2); margin-bottom:20px; }
   .btn-primary{
     display:block; width:100%; text-align:center;
@@ -109,47 +108,11 @@
   .option:hover{ border-color:var(--green); }
   .option.selected{ border-color:var(--green); background:var(--chip-green-bg); color:var(--chip-green-text); font-weight:600; }
 
-  .result-message{
-    font-size:17px; font-weight:700; line-height:1.6;
-    color:var(--dark-green-text);
-    text-align:center;
-    margin-bottom:22px;
-  }
-
-  .promo-block{
-    margin-top:22px; padding-top:20px;
-    border-top:1px solid rgba(255,255,255,.14);
-    text-align:center;
-  }
-  .promo-price{ margin:2px 0 14px; }
-  .promo-price-old{
-    font-family:'Poppins'; font-size:15px; font-weight:600;
-    color:var(--dark-green-text-2);
-    text-decoration:line-through;
-    margin-right:8px;
-  }
-  .promo-price-new{
-    font-family:'Poppins'; font-size:25px; font-weight:800;
-    color:var(--dark-green-text);
-  }
-  .promo-price-currency{
-    font-size:11px; font-weight:600;
-    color:var(--dark-green-text-2);
-    margin-left:4px;
-  }
-
-  .promo-visual{
-    margin:0 0 20px;
-    padding-top:16px;
-    border-top:1px solid rgba(255,255,255,.14);
-  }
-  .promo-visual img{
+  .result-visual{
     display:block; width:100%; height:auto;
-    border-radius:16px;
-  }
-  .promo-visual-caption{
-    font-size:12px; color:var(--dark-green-text-2);
-    text-align:center; margin-top:8px;
+    border-radius:20px;
+    margin-bottom:18px;
+    box-shadow:var(--card-shadow-lg);
   }
 
   .btn-retry{
@@ -196,23 +159,8 @@
 
           <!-- 完成 -->
           <div class="quiz-screen" id="screen-result">
-            <p class="result-message">恭喜通關，請截圖本頁回 Buzzer 任務頁交付任務領取 Honey 獎勵！</p>
-
-            <div class="promo-block">
-              <div class="quiz-badge promo-badge">首月 50% OFF</div>
-              <p class="promo-price">
-                <span class="promo-price-old">$5.99</span>
-                <span class="promo-price-new">$2.99</span>
-                <span class="promo-price-currency">USD</span>
-              </p>
-
-              <div class="promo-visual">
-                <img src="assets/img/ai-video-generation.jpg" alt="AI 影片生成">
-                <p class="promo-visual-caption">約可生成 2 支影片</p>
-              </div>
-
-              <button class="btn-primary" onclick="tryPotatoPost()">馬上體驗 PotatoPost</button>
-            </div>
+            <img class="result-visual" src="assets/img/task-complete.png" alt="任務完成，恭喜通關，PotatoPost 首月 50% OFF">
+            <button class="btn-primary" onclick="tryPotatoPost()">馬上體驗 PotatoPost</button>
 
             <button class="btn-retry" onclick="retry()">重新看一次影片</button>
           </div>

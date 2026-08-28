@@ -65,11 +65,15 @@
     display:block; width:100%; aspect-ratio:9/16; object-fit:cover;
   }
   .video-card video.hidden{ display:none; }
-  /* 全螢幕時改用 contain，維持直式構圖、左右留黑邊，不要裁切成橫式 */
-  .video-card video:fullscreen,
-  .video-card video:-webkit-full-screen{
-    object-fit:contain;
-    background:#000;
+
+  /* 播放時用 CSS 撐滿畫面（不呼叫裝置全螢幕 API，避免跳出系統原生播放器和它的控制列） */
+  .video-card.video-fullscreen{
+    position:fixed; inset:0; z-index:9999;
+    max-width:none; width:100vw; height:100vh; height:100dvh;
+    border-radius:0; box-shadow:none; margin:0;
+  }
+  .video-card.video-fullscreen video{
+    width:100%; height:100%; aspect-ratio:auto; object-fit:contain;
   }
 
   .video-overlay{
@@ -242,6 +246,7 @@
 
     const taskVideo = document.getElementById('task-video');
     const videoOverlay = document.getElementById('video-overlay');
+    const videoCard = document.querySelector('.video-card');
 
     // 沒有 controls 可以拖拉了，但保險再擋一次：不能跳到還沒看過的進度
     let maxWatched = 0;
@@ -258,14 +263,13 @@
       }
     });
 
-    // 退出全螢幕：標準 Fullscreen API 和 iOS Safari 的原生 video 全螢幕是兩套不同機制，兩個都要處理
-    function exitFullscreenIfActive(){
-      if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
-      if (taskVideo.webkitDisplayingFullscreen && taskVideo.webkitExitFullscreen) taskVideo.webkitExitFullscreen();
+    function shrinkVideo(){
+      videoCard.classList.remove('video-fullscreen');
+      document.body.style.overflow = '';
     }
 
     taskVideo.addEventListener('ended', () => {
-      exitFullscreenIfActive();
+      shrinkVideo();
       taskVideo.classList.add('hidden');
       videoOverlay.classList.add('active');
       showScreen('screen-lead');
@@ -276,21 +280,13 @@
       document.getElementById(id).classList.add('active');
     }
 
-    // 嘗試全螢幕播放；WebView 或瀏覽器不支援就靜靜失敗，退回卡片內播放
-    function enterFullscreenIfPossible(video){
-      try {
-        if (video.requestFullscreen) video.requestFullscreen().catch(() => {});
-        else if (video.webkitEnterFullscreen) video.webkitEnterFullscreen();
-        else if (video.webkitRequestFullscreen) video.webkitRequestFullscreen();
-      } catch (e) { /* 不支援全螢幕，維持卡片內播放 */ }
-    }
-
     function playVideo(){
       maxWatched = 0;
       videoOverlay.classList.remove('active');
       taskVideo.classList.remove('hidden');
+      videoCard.classList.add('video-fullscreen');
+      document.body.style.overflow = 'hidden';
       taskVideo.play().catch(() => {});
-      enterFullscreenIfPossible(taskVideo);
     }
 
     function startVideo(){

@@ -241,6 +241,9 @@
     // 部署 apps-script.gs 後把 /exec 網址填在這裡
     const SHEET_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzdLQNUBIkqq0WUdDawe6SXV1RL3tD2nf--F-2OGS6IzqdmLcpIugswsHGvFDcHfsI-/exec';
 
+    // 要跟 apps-script.gs 的 APP_SECRET 一致，用來過濾亂打這個端點的機器人（不是真正的安全機制，只是墊高亂打的門檻）
+    const APP_SECRET = '71410aed4be032bf480513ced8ed5f16';
+
     // Buzzer App 開啟這個頁面時，網址帶 ?user=xxx 夾帶用戶 ID
     const USER_ID = new URLSearchParams(window.location.search).get('user') || '';
 
@@ -343,16 +346,13 @@
       }
     }
 
-    function formatAnswer(a){
-      return Array.isArray(a) ? a.join('、') : (a || '');
-    }
-
     function submitResponses(){
       if (!SHEET_ENDPOINT || !SHEET_ENDPOINT.startsWith('https://script.google.com')) return;
+      // q1 可能是陣列（複選），直接送陣列，不要先合併成字串——選項文字本身可能包含「、」，合併後無法安全切回去
       fetch(SHEET_ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ uid: USER_ID, q1: formatAnswer(answers[0]), q2: formatAnswer(answers[1]), q3: formatAnswer(answers[2]) })
+        body: JSON.stringify({ secret: APP_SECRET, uid: USER_ID, q1: answers[0], q2: answers[1], q3: answers[2] })
       }).catch(err => console.error('問卷回覆送出失敗', err));
     }
 

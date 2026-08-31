@@ -1,0 +1,6 @@
+{
+  "name": "potatopost-quiz-proxy",
+  "version": "1.0.0",
+  "private": true,
+  "description": "PotatoPost 任務問卷送出中介：把真正的 Apps Script 端點跟 secret 藏在後端，前端只看得到這個 Vercel 網址"
+}
